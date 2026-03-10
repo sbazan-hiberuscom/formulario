@@ -11,12 +11,58 @@ app.use(express.json())
 const SECRET = "secret123"
 
 const users = [
-
-{username:"juan",password:"1234"},
-{username:"ana",password:"1234"},
+{username:"Admin",password:"Ola1234"},
+{username:"david",password:"1234"},
+{username:"sonia",password:"1234"},
+{username:"daniela",password:"1234"},
+{username:"david jr",password:"1234"},
+{username:"jesus",password:"1234"},
+{username:"estibaliz",password:"1234"},
+{username:"estibaliz jr",password:"1234"},
+{username:"raquel",password:"1234"},
+{username:"alexandre",password:"1234"},
+{username:"nerea",password:"1234"},
+{username:"kevin",password:"1234"},
+{username:"jose",password:"1234"},
+{username:"raquel_vazquez",password:"1234"},
+{username:"juanillo",password:"1234"},
+{username:"bienvenida",password:"1234"},
+{username:"oscar",password:"1234"},
+{username:"manu",password:"1234"},
+{username:"eli",password:"1234"},
 {username:"maria",password:"1234"},
-{username:"Admin",password:"Ola1234"}
-
+{username:"santi",password:"1234"},
+{username:"zaida",password:"1234"},
+{username:"lore",password:"1234"},
+{username:"carlos",password:"1234"},
+{username:"sheyma",password:"1234"},
+{username:"antuan",password:"1234"},
+{username:"laura",password:"1234"},
+{username:"lenis",password:"1234"},
+{username:"tamara",password:"1234"},
+{username:"pedro",password:"1234"},
+{username:"fran",password:"1234"},
+{username:"julia_alvarez",password:"1234"},
+{username:"esther",password:"1234"},
+{username:"ana",password:"1234"},
+{username:"sandra",password:"1234"},
+{username:"pablo",password:"1234"},
+{username:"andre",password:"1234"},
+{username:"noemi",password:"1234"},
+{username:"julian",password:"1234"},
+{username:"andrea",password:"1234"},
+{username:"sergio",password:"1234"},
+{username:"tita_maria",password:"1234"},
+{username:"manolo",password:"1234"},
+{username:"eva",password:"1234"},
+{username:"boni",password:"1234"},
+{username:"julia",password:"1234"},
+{username:"alfonso",password:"1234"},
+{username:"mamen",password:"1234"},
+{username:"ángel",password:"1234"},
+{username:"noelia",password:"1234"},
+{username:"amanda",password:"1234"},
+{username:"isabel",password:"1234"}
 ]
 
 app.post("/login",(req,res)=>{
@@ -140,6 +186,30 @@ app.post("/submit-test", verifyToken, (req, res) => {
   } catch (error) {
     console.error("Error al guardar resultados:", error)
     res.status(500).json({ error: "Error al guardar los resultados" })
+  }
+})
+
+// Endpoint para verificar si el usuario ya completó el test
+app.get("/user-has-completed", verifyToken, (req, res) => {
+  const username = req.user.username
+  
+  // Admin siempre puede hacer el test de nuevo
+  if (username === "Admin") {
+    return res.json({ 
+      hasCompleted: false,
+      result: null
+    })
+  }
+  
+  try {
+    const result = db.prepare("SELECT * FROM results WHERE username = ?").get(username)
+    res.json({ 
+      hasCompleted: !!result,
+      result: result || null
+    })
+  } catch (error) {
+    console.error("Error al verificar si completó:", error)
+    res.status(500).json({ error: "Error al verificar resultado" })
   }
 })
 

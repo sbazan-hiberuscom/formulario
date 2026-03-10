@@ -11,7 +11,7 @@
 
         <div class="field">
           <label>Password</label>
-          <Password v-model="password" toggleMask />
+          <Password v-model="password" toggleMask :feedback="false" />
         </div>
 
         <Button 
@@ -74,6 +74,18 @@ async function login(){
 
 .field{
   margin-bottom:20px;
+  display:flex;
+  flex-direction:column;
+}
+
+.field label {
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.field input {
+  width: 100%;
 }
 
 </style>

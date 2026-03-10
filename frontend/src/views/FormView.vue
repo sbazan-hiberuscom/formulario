@@ -3,13 +3,11 @@
     <Card class="form-card">
       <template #title>Formulario de Preguntas</template>
       <template #content>
-        <div class="progress-bar">
-          <div class="progress-text">Pregunta {{ currentQuestionIndex + 1 }} de {{ questions.length }}</div>
-          <ProgressBar :value="((currentQuestionIndex + 1) / questions.length) * 100" class="progress"></ProgressBar>
+        <div class="question-counter">
+          Pregunta {{ currentQuestionIndex + 1 }} de {{ questions.length }}
         </div>
 
         <div class="question-section">
-          <h3 class="question-title">Pregunta {{ currentQuestionIndex + 1 }}</h3>
           <p class="question-text">{{ currentQuestion.text }}</p>
 
           <div class="options-section">
@@ -67,7 +65,6 @@ import { useRouter } from "vue-router"
 import Button from "primevue/button"
 import Card from "primevue/card"
 import RadioButton from "primevue/radiobutton"
-import ProgressBar from "primevue/progressbar"
 import api from "../services/api"
 
 const router = useRouter()
@@ -80,7 +77,7 @@ const isSubmitting = ref(false)
 const questions = ref([
   {
     text: "¿Cómo nos conocimos?",
-    options: ["En clases de inglés", "Nos presentó una amiga", "Por tinder", "Tomando unas copas"],
+    options: ["En clases de inglés", "Nos presentó una amiga", "Por Tinder", "Tomando unas copas"],
     correctAnswer: "Nos presentó una amiga"
   },
   {
@@ -193,7 +190,32 @@ function shuffleArray(array) {
   return newArray
 }
 
-onMounted(() => {
+onMounted(async () => {
+  // Verificar si el usuario ya completó el test
+  let canAccessTest = false
+  
+  try {
+    const response = await api.get("/user-has-completed")
+    console.log("Verificación de completado:", response.data)
+    
+    if (response.data.hasCompleted) {
+      // Usuario ya completó el test, redirigir
+      console.log("Usuario ya completó el test")
+      router.push("/already-completed")
+      return
+    }
+    canAccessTest = true
+  } catch (error) {
+    console.error("Error al verificar si completó:", error)
+    alert("Error al verificar tu estado. Por favor intenta de nuevo.")
+    router.push("/waiting")
+    return
+  }
+
+  if (!canAccessTest) {
+    return
+  }
+
   // Mezclar las opciones de cada pregunta aleatoriamente
   questions.value.forEach(question => {
     question.options = shuffleArray(question.options)
@@ -316,7 +338,7 @@ function submitAnswers() {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f5f5f5;
 }
 
 .form-card {
@@ -324,18 +346,11 @@ function submitAnswers() {
   max-width: 600px;
 }
 
-.progress-bar {
-  margin-bottom: 25px;
-}
-
-.progress-text {
+.question-counter {
   font-size: 14px;
   color: #666;
-  margin-bottom: 8px;
-}
-
-.progress {
-  height: 24px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .question-title {

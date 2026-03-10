@@ -5,6 +5,7 @@ import WaitingView from "../views/WaitingView.vue"
 import FormView from "../views/FormView.vue"
 import ThankYouView from "../views/ThankYouView.vue"
 import ProgressView from "../views/ProgressView.vue"
+import AlreadyCompletedView from "../views/AlreadyCompletedView.vue"
 
 const routes = [
 
@@ -32,6 +33,11 @@ const routes = [
   path:"/progress",
   name:"progress",
   component:ProgressView
+},
+{
+  path:"/already-completed",
+  name:"already-completed",
+  component:AlreadyCompletedView
 }
 
 ]

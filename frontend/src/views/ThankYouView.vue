@@ -82,7 +82,7 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f5f5f5;
 }
 
 .thank-you-card {

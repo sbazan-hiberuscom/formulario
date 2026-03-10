@@ -1,0 +1,9 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo circular -->
+  <circle cx="100" cy="100" r="95" fill="#667eea" opacity="0.1" stroke="#667eea" stroke-width="2"/>
+  
+  <!-- Texto KyS -->
+  <text x="100" y="120" font-size="80" font-weight="bold" font-family="Arial, sans-serif" text-anchor="middle" fill="#667eea">
+    KyS
+  </text>
+</svg>
