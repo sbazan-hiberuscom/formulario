@@ -5,11 +5,18 @@
       <template #content>
         <div class="header-section">
           <h3 class="subtitle">Usuarios en tiempo real</h3>
-          <Button 
-            label="Volver"
-            class="p-button-secondary"
-            @click="goBack"
-          />
+          <div class="button-group">
+            <Button 
+              label="Finalizar Test"
+              class="p-button-danger"
+              @click="finalizeTest"
+            />
+            <Button 
+              label="Volver"
+              class="p-button-secondary"
+              @click="goBack"
+            />
+          </div>
         </div>
 
         <div v-if="activeUsers.length === 0" class="no-users">
@@ -81,6 +88,19 @@ function formatTime(seconds) {
 
 function goBack() {
   router.push("/waiting")
+}
+
+async function finalizeTest() {
+  if (confirm("¿Estás seguro? Esto finalizará el test para todos los usuarios.")) {
+    try {
+      await api.post("/finalize-test", {})
+      alert("Test finalizado. Mostrando ranking...")
+      router.push("/ranking")
+    } catch (error) {
+      console.error("Error al finalizar test:", error)
+      alert("Error al finalizar el test")
+    }
+  }
 }
 
 onMounted(() => {
@@ -179,6 +199,20 @@ onUnmounted(() => {
 
 :deep(.p-button-secondary) {
   margin-bottom: 0;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+:deep(.p-button-danger) {
+  background-color: #ef4444;
+  border-color: #ef4444;
+}
+
+:deep(.p-button-danger:hover) {
+  background-color: #dc2626;
 }
 
 @media (max-width: 768px) {

@@ -23,6 +23,13 @@
           class="p-button-secondary start-button"
           @click="viewProgress"
         />
+
+        <Button 
+          v-if="isAdmin"
+          label="Reiniciar test"
+          class="p-button-warning start-button"
+          @click="resetTest"
+        />
       </template>
     </Card>
   </div>
@@ -34,6 +41,7 @@ import { useRouter } from "vue-router"
 import Button from "primevue/button"
 import Card from "primevue/card"
 import { jwtDecode } from "jwt-decode"
+import api from "../services/api"
 
 const router = useRouter()
 const isAdmin = ref(false)
@@ -44,6 +52,18 @@ function startForm() {
 
 function viewProgress() {
   router.push("/progress")
+}
+
+async function resetTest() {
+  if (confirm("¿Estás seguro? Se borrarán todos los resultados y los usuarios podrán hacer el test de nuevo.")) {
+    try {
+      await api.post("/reset-test", {})
+      alert("Test reiniciado correctamente. Los usuarios pueden hacer el test de nuevo.")
+    } catch (error) {
+      console.error("Error al reiniciar test:", error)
+      alert("Error al reiniciar el test")
+    }
+  }
 }
 
 onMounted(() => {
@@ -99,6 +119,16 @@ onMounted(() => {
   width: 100%;
   padding: 12px;
   font-size: 16px;
+  margin-bottom: 10px;
+}
+
+:deep(.p-button-warning) {
+  background-color: #f59e0b !important;
+  border-color: #f59e0b !important;
+}
+
+:deep(.p-button-warning:hover) {
+  background-color: #d97706 !important;
 }
 
 /* Tablet - Pantallas medianas */

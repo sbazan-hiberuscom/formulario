@@ -6,7 +6,12 @@
         <div class="thank-you-content">
           <i class="pi pi-check-circle success-icon"></i>
           
-          <div class="results-summary">
+          <div v-if="testFinalized" class="finalized-message">
+            <p class="finalized-text">El test ha sido finalizado por el administrador.</p>
+            <p class="finalized-subtext">Tu participación ha sido registrada.</p>
+          </div>
+
+          <div v-else class="results-summary">
             <div class="result-item">
               <span class="label">Respuestas correctas:</span>
               <span class="value">{{ correct }} / {{ totalQuestions }}</span>
@@ -51,6 +56,7 @@ const route = useRoute()
 const correct = route.query.correct || 0
 const time = route.query.time || 0
 const totalQuestions = route.query.totalQuestions || 0
+const testFinalized = route.query.testFinalized === "true"
 
 const percentage = computed(() => {
   return totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0
@@ -99,6 +105,27 @@ onMounted(() => {
   color: #10b981;
   margin-bottom: 20px;
   display: block;
+}
+
+.finalized-message {
+  background-color: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  padding: 20px;
+  margin: 30px 0;
+  border-radius: 8px;
+}
+
+.finalized-text {
+  color: #92400e;
+  font-weight: 600;
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.finalized-subtext {
+  color: #b45309;
+  font-size: 14px;
+  margin: 5px 0;
 }
 
 .results-summary {

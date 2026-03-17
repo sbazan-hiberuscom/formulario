@@ -6,6 +6,7 @@ import FormView from "../views/FormView.vue"
 import ThankYouView from "../views/ThankYouView.vue"
 import ProgressView from "../views/ProgressView.vue"
 import AlreadyCompletedView from "../views/AlreadyCompletedView.vue"
+import RankingView from "../views/RankingView.vue"
 
 const routes = [
 
@@ -38,6 +39,11 @@ const routes = [
   path:"/already-completed",
   name:"already-completed",
   component:AlreadyCompletedView
+},
+{
+  path:"/ranking",
+  name:"ranking",
+  component:RankingView
 }
 
 ]

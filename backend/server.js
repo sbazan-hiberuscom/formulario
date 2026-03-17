@@ -110,6 +110,9 @@ const verifyToken = (req, res, next) => {
 // Almacenar usuarios activos en el test (en memoria)
 const activeUsers = new Map()
 
+// Variable para saber si el test ha sido finalizado por Admin
+let testFinalized = false
+
 // Endpoint para iniciar el test
 app.post("/start-test", verifyToken, (req, res) => {
   const username = req.user.username
@@ -228,6 +231,69 @@ app.get("/results", verifyToken, (req, res) => {
   } catch (error) {
     console.error("Error al obtener resultados:", error)
     res.status(500).json({ error: "Error al obtener los resultados" })
+  }
+})
+
+// Endpoint para finalizar el test (solo Admin)
+app.post("/finalize-test", verifyToken, (req, res) => {
+  const username = req.user.username
+  
+  if (username !== "Admin") {
+    return res.status(403).json({ error: "No tienes permiso para finalizar el test" })
+  }
+  
+  testFinalized = true
+  res.json({ message: "Test finalizado" })
+})
+
+// Endpoint para obtener el estado del test (si está finalizado)
+app.get("/test-status", verifyToken, (req, res) => {
+  res.json({ testFinalized: testFinalized })
+})
+
+// Endpoint para reiniciar el test (solo Admin)
+app.post("/reset-test", verifyToken, (req, res) => {
+  const username = req.user.username
+  
+  if (username !== "Admin") {
+    return res.status(403).json({ error: "No tienes permiso para reiniciar el test" })
+  }
+  
+  try {
+    // Limpiar resultados
+    db.prepare("DELETE FROM results").run()
+    
+    // Resetear estado
+    testFinalized = false
+    activeUsers.clear()
+    
+    res.json({ message: "Test reiniciado correctamente" })
+  } catch (error) {
+    console.error("Error al reiniciar el test:", error)
+    res.status(500).json({ error: "Error al reiniciar el test" })
+  }
+})
+
+// Endpoint para obtener los top 5 usuarios
+app.get("/top-users", verifyToken, (req, res) => {
+  const username = req.user.username
+  
+  if (username !== "Admin") {
+    return res.status(403).json({ error: "No tienes permiso ver el ranking" })
+  }
+  
+  try {
+    const topUsers = db.prepare(`
+      SELECT username, correct, time 
+      FROM results 
+      ORDER BY correct DESC, time ASC 
+      LIMIT 5
+    `).all()
+    
+    res.json({ topUsers })
+  } catch (error) {
+    console.error("Error al obtener top usuarios:", error)
+    res.status(500).json({ error: "Error al obtener ranking" })
   }
 })
 

@@ -107,7 +107,7 @@ const questions = ref([
     correctAnswer: "9"
   },
   {
-    text: "¿Cómo se escribe correctamente el nombre de Katy?",
+    text: "¿Cómo se escribe correctamente el nombre de Katy? (El que aparece en su DNI)",
     options: ["khaterine", "katherine", "Katherin", "Khaterin"],
     correctAnswer: "katherine"
   },
@@ -233,9 +233,33 @@ onMounted(async () => {
   }).catch(error => console.error("Error al iniciar test:", error))
   
   // Actualizar el tiempo transcurrido cada segundo
-  setInterval(() => {
+  const timeInterval = setInterval(() => {
     elapsedTime.value = Math.floor((Date.now() - startTime.value) / 1000)
   }, 1000)
+
+  // Verificar cada 3 segundos si el test ha sido finalizado
+  const checkFinalizedInterval = setInterval(async () => {
+    try {
+      const response = await api.get("/test-status")
+      if (response.data.testFinalized) {
+        clearInterval(timeInterval)
+        clearInterval(checkFinalizedInterval)
+        
+        // Redirigir a ThankYouView con un mensaje especial
+        router.push({
+          name: "thank-you",
+          query: {
+            correct: 0,
+            time: elapsedTime.value,
+            totalQuestions: questions.value.length,
+            testFinalized: "true"
+          }
+        })
+      }
+    } catch (error) {
+      console.error("Error al verificar estado del test:", error)
+    }
+  }, 3000)
 })
 
 function nextQuestion() {
