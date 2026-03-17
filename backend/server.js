@@ -8,7 +8,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-const SECRET = "secret123"
+const SECRET = process.env.JWT_SECRET || "secret123"
 
 const users = [
 {username:"Admin",password:"Ola1234"},
@@ -297,6 +297,7 @@ app.get("/top-users", verifyToken, (req, res) => {
   }
 })
 
-app.listen(3000,()=>{
-  console.log("server running")
+const PORT = process.env.PORT || 3000;
+app.listen(PORT,()=>{
+  console.log(`server running on port ${PORT}`)
 })
